@@ -5,12 +5,18 @@ export function Footer() {
   return (
     <footer className="bg-[#262626] text-white px-8 py-10">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:gap-12 items-center">
-        <div className="flex flex-col gap-6 flex-shrink-0 items-center">
-          <img
-            src={ithsLogo}
-            alt="Institute of Translational Health Sciences"
-            className="h-16 w-auto object-contain"
-          />
+        <div className="flex flex-col gap-10 flex-shrink-0 items-center">
+          <a
+            href="https://www.iths.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={ithsLogo}
+              alt="Institute of Translational Health Sciences"
+              className="h-16 w-auto object-contain"
+            />
+          </a>
           <img
             src={uwMedicineLogo}
             alt="University of Washington School of Medicine"
@@ -23,7 +29,7 @@ export function Footer() {
             About PeerLink
           </h3>
           <p className="text-sm leading-relaxed text-white/80 max-w-2xl">
-            PeerLink was developed in collaboration with the Institute of
+            PeerLink was made in collaboration with the Institute of
             Translational Health Sciences (ITHS) and a group of students at the
             Information School (iSchool) at the University of Washington. This
             project was developed as a part of the iSchool's Capstone Program in
@@ -36,7 +42,8 @@ export function Footer() {
               className="text-blue-400 hover:underline"
             >
               https://ischool.uw.edu/capstone.
-            </a>{" "}
+            </a> 
+            <br />
             This website is currently maintained by{" "}
             <a
               href="https://rit.uw.edu/"
@@ -46,7 +53,7 @@ export function Footer() {
             >
               UW Medicine Research IT.
             </a>{" "}
-            <br />
+            <br /> <br />
             Created by Amrith Gandham, Aradhana Muthabatulla, Liya Hutchison,
             Rohan Simha, and Mykyta Lepikash.
           </p>
