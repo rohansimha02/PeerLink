@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Outlet, Link, useLocation } from 'react-router'
 import { Menu, LayoutDashboard, History, ChevronLeft, FileText, Search, Settings } from 'lucide-react'
 import ithsLogo from '../../assets/iths_logo.png'
@@ -7,6 +7,10 @@ import { Footer } from './Footer'
 export function Layout() {
   const [isOpen, setIsOpen] = useState(true)
   const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 })
+  }, [location.pathname])
 
   return (
     <div className="min-h-screen flex flex-col">

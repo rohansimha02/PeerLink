@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { Link } from 'react-router'
 import {
   X, ChevronDown, Plus, Minus, AlertCircle, Loader2, Layers,
 } from 'lucide-react'
@@ -254,6 +255,13 @@ export function BatchProcessModal({ selectedIds, onClose, onSuccess }: Props) {
         </div>
 
         {/* Footer */}
+        <div className="px-6 pt-3 pb-1 text-xs text-gray-500">
+          Track submission progress in{' '}
+          <Link to="/match-history" onClick={onClose} className="text-[#203E84] font-medium hover:underline">
+            Match History
+          </Link>
+          .
+        </div>
         <div className="px-6 py-4 border-t border-gray-100 flex items-center gap-3">
           <Button
             onClick={handleSubmit}
