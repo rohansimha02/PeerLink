@@ -363,11 +363,6 @@ export function MatchHistoryPage() {
                       </div>
                       {isExpanded ? <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" /> : <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />}
                     </button>
-                    {isProcessing && (
-                      <div className="h-0.5 bg-blue-100">
-                        <div className="h-full bg-blue-400 animate-pulse" style={{ width: '60%' }} />
-                      </div>
-                    )}
                   </div>
                 )
               })}

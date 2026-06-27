@@ -90,19 +90,12 @@ function EmailTemplateEditor() {
 
   const handleSave = () => {
     saveTemplate(program, { subject, body })
-    setIsCustom(true)
-    setDirty(false)
-    setSavedFlash(true)
-    window.setTimeout(() => setSavedFlash(false), 2000)
+    window.location.reload()
   }
 
   const handleReset = () => {
     resetTemplate(program)
-    const tpl = getDefaultTemplate(program)
-    setSubject(tpl.subject)
-    setBody(tpl.body)
-    setIsCustom(false)
-    setDirty(false)
+    window.location.reload()
   }
 
   return (
