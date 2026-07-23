@@ -10,11 +10,11 @@ import { Input } from '../components/ui/input'
 import { usePeerLink, type MatchStatus, type MatchPayload, PROGRAMS, INSTITUTIONS } from '../context/PeerLinkContext'
 import { BatchProcessModal } from '../components/BatchProcessModal'
 
-const statusConfig: Record<MatchStatus, { label: string; color: string; dot: string }> = {
-  unmatched: { label: 'Unmatched', color: 'text-red-600 bg-red-50 border-red-200', dot: 'bg-red-400' },
-  processing: { label: 'Processing', color: 'text-blue-600 bg-blue-50 border-blue-200', dot: 'bg-blue-400' },
-  'in-progress': { label: 'In Progress', color: 'text-amber-600 bg-amber-50 border-amber-200', dot: 'bg-amber-400' },
-  matched: { label: 'Matched', color: 'text-[#849B6F] bg-[#E8F0DD] border-[#849B6F]/30', dot: 'bg-[#849B6F]' },
+const statusConfig: Record<MatchStatus, { label: string; color: string }> = {
+  unmatched: { label: 'Unmatched', color: 'text-red-600 bg-red-50 border-red-200' },
+  processing: { label: 'Processing', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  'in-progress': { label: 'In Progress', color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  matched: { label: 'Matched', color: 'text-[#849B6F] bg-[#E8F0DD] border-[#849B6F]/30' },
 }
 
 export function AbstractsPage() {
@@ -324,10 +324,8 @@ export function AbstractsPage() {
                         </p>
                         <div className="flex items-center justify-between gap-2">
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border font-medium ${status.color}`}>
-                            {isProcessingStatus ? (
+                            {isProcessingStatus && (
                               <Loader2 className="w-2.5 h-2.5 animate-spin flex-shrink-0" />
-                            ) : (
-                              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status.dot}`} />
                             )}
                             {status.label}
                           </span>
@@ -380,10 +378,8 @@ export function AbstractsPage() {
             {/* Status row */}
             <div className="flex items-center gap-3">
               <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border font-medium ${statusConfig[selectedApp.matchStatus].color}`}>
-                {selectedApp.matchStatus === 'processing' ? (
+                {selectedApp.matchStatus === 'processing' && (
                   <Loader2 className="w-3 h-3 animate-spin" />
-                ) : (
-                  <span className={`w-2 h-2 rounded-full ${statusConfig[selectedApp.matchStatus].dot}`} />
                 )}
                 {statusConfig[selectedApp.matchStatus].label}
               </span>

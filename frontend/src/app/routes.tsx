@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
       { path: 'abstracts', Component: AbstractsPage },
       { path: 'find-reviewers', Component: FindReviewersPage },
       { path: 'match-history', Component: MatchHistoryPage },
-      { path: 'settings', Component: SettingsPage },
+      { path: 'settings', Component: SettingsPage }
     ],
   },
 ])

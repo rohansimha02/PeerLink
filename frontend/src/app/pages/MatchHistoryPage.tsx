@@ -9,11 +9,11 @@ import { usePeerLink, PROGRAMS, type MatchStatus } from '../context/PeerLinkCont
 import { api, MatchJob } from '../../api/client'
 import { buildReviewerMailto } from '../utils/reviewerEmail'
 
-const statusConfig: Record<MatchStatus, { label: string; color: string; dot: string }> = {
-  unmatched: { label: 'Unmatched', color: 'text-red-600 bg-red-50 border-red-200', dot: 'bg-red-400' },
-  processing: { label: 'Processing', color: 'text-blue-600 bg-blue-50 border-blue-200', dot: 'bg-blue-400' },
-  'in-progress': { label: 'In Progress', color: 'text-amber-600 bg-amber-50 border-amber-200', dot: 'bg-amber-400' },
-  matched: { label: 'Matched', color: 'text-[#849B6F] bg-[#E8F0DD] border-[#849B6F]/30', dot: 'bg-[#849B6F]' },
+const statusConfig: Record<MatchStatus, { label: string; color: string }> = {
+  unmatched: { label: 'Unmatched', color: 'text-red-600 bg-red-50 border-red-200' },
+  processing: { label: 'Processing', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  'in-progress': { label: 'In Progress', color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  matched: { label: 'Matched', color: 'text-[#849B6F] bg-[#E8F0DD] border-[#849B6F]/30' },
 }
 
 interface JustificationModal {
@@ -363,11 +363,6 @@ export function MatchHistoryPage() {
                       </div>
                       {isExpanded ? <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" /> : <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />}
                     </button>
-                    {isProcessing && (
-                      <div className="h-0.5 bg-blue-100">
-                        <div className="h-full bg-blue-400 animate-pulse" style={{ width: '60%' }} />
-                      </div>
-                    )}
                   </div>
                 )
               })}
@@ -435,24 +430,22 @@ export function MatchHistoryPage() {
 
                       {/* Abstract info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-1 pr-4">
+                        {abstract && (() => {
+                          const status = statusConfig[abstract.matchStatus]
+                          const isProcessingStatus = abstract.matchStatus === 'processing'
+                          return (
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border font-medium flex-shrink-0 mb-1 ${status.color}`}>
+                              {isProcessingStatus && (
+                                <Loader2 className="w-2.5 h-2.5 animate-spin flex-shrink-0" />
+                              )}
+                              {status.label}
+                            </span>
+                          )
+                        })()}
+                        <div className="mb-1 pr-4">
                           <p className="font-semibold text-[#203E84] text-base leading-snug">
                             {abstract?.title ?? `Abstract #${job.abstract_id}`}
                           </p>
-                          {abstract && (() => {
-                            const status = statusConfig[abstract.matchStatus]
-                            const isProcessingStatus = abstract.matchStatus === 'processing'
-                            return (
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border font-medium flex-shrink-0 ${status.color}`}>
-                                {isProcessingStatus ? (
-                                  <Loader2 className="w-2.5 h-2.5 animate-spin flex-shrink-0" />
-                                ) : (
-                                  <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${status.dot}`} />
-                                )}
-                                {status.label}
-                              </span>
-                            )
-                          })()}
                         </div>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
                           {abstract?.applicantName && (
