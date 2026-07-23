@@ -31,9 +31,27 @@ def me(request: Request) -> dict[str, str | None]:
     full_name = " ".join(p for p in (first, last) if p) or None
 
     return {
-        "user_id": _first_header(request, "userId"),
+        "user_id": _first_header(request, "eppn", "userId"),
         "email": _first_header(request, "email"),
         "first_name": first,
         "last_name": last,
         "full_name": full_name,
+    }
+
+
+@router.get("/_debug/headers")
+def debug_headers(request: Request) -> dict[str, object]:
+    """TEMPORARY diagnostic — remove once SSO header forwarding is confirmed.
+
+    Returns inbound request header NAMES only (never values, so no PII leaks),
+    plus whether each expected Shibboleth attribute header is present. This shows
+    exactly what Apache/nginx actually forward to the backend, so we can tell
+    "no headers arriving" apart from "arriving under a different name".
+    """
+    names = sorted(request.headers.keys())
+    lowered = {n.lower() for n in names}
+    expected = ["email", "firstName", "lastName", "userId"]
+    return {
+        "inbound_header_names": names,
+        "expected_present": {e: (e.lower() in lowered) for e in expected},
     }
