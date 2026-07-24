@@ -31,7 +31,7 @@ def me(request: Request) -> dict[str, str | None]:
     full_name = " ".join(p for p in (first, last) if p) or None
 
     return {
-        "user_id": _first_header(request, "eppn", "userId"),
+        "user_id": _first_header(request, "x-user-eppn", "userId"),
         "email": _first_header(request, "email"),
         "first_name": first,
         "last_name": last,
@@ -52,7 +52,7 @@ def debug_headers(request: Request) -> dict[str, object]:
         name: ("<redacted>" if name.lower() in redact else value)
         for name, value in request.headers.items()
     }
-    expected = ["email", "eppn", "firstName", "lastName", "userId"]
+    expected = ["email", "x-user-eppn", "firstName", "lastName", "userId"]
     lowered = {n.lower() for n in headers}
     return {
         "inbound_headers": headers,
