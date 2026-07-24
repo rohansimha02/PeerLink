@@ -66,7 +66,7 @@ export function Layout() {
             <div className="flex items-center gap-4">
               <img src={ithsLogo} alt="Institute of Translational Health Sciences" className="h-10 w-auto" />
             </div>
-            {currentUser && (currentUser.full_name || currentUser.email || currentUser.user_id) && (
+            {currentUser && (currentUser.full_name || currentUser.email) && (
               <div className="flex items-center gap-2.5">
                 <div className="hidden sm:block text-right leading-tight">
                   {currentUser.full_name && (
@@ -74,9 +74,6 @@ export function Layout() {
                   )}
                   {currentUser.email && (
                     <div className="text-xs text-gray-500">{currentUser.email}</div>
-                  )}
-                  {currentUser.user_id && (
-                    <div className="text-xs text-gray-400">{currentUser.user_id}</div>
                   )}
                 </div>
                 <UserCircle className="h-8 w-8 text-[#849B6F]" />
