@@ -43,15 +43,18 @@ def me(request: Request) -> dict[str, str | None]:
 def debug_headers(request: Request) -> dict[str, object]:
     """TEMPORARY diagnostic — remove once SSO header forwarding is confirmed.
 
-    Returns inbound request header NAMES only (never values, so no PII leaks),
-    plus whether each expected Shibboleth attribute header is present. This shows
-    exactly what Apache/nginx actually forward to the backend, so we can tell
-    "no headers arriving" apart from "arriving under a different name".
+    Returns inbound request headers WITH values, so we can see exactly what the
+    SP is forwarding. Sensitive headers (cookie/authorization) are redacted so a
+    live session token never lands in a response or log.
     """
-    names = sorted(request.headers.keys())
-    lowered = {n.lower() for n in names}
-    expected = ["email", "firstName", "lastName", "userId"]
+    redact = {"cookie", "authorization"}
+    headers = {
+        name: ("<redacted>" if name.lower() in redact else value)
+        for name, value in request.headers.items()
+    }
+    expected = ["email", "eppn", "firstName", "lastName", "userId"]
+    lowered = {n.lower() for n in headers}
     return {
-        "inbound_header_names": names,
+        "inbound_headers": headers,
         "expected_present": {e: (e.lower() in lowered) for e in expected},
     }
