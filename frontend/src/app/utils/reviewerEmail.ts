@@ -4,14 +4,14 @@
 // in localStorage and resolved at render time.
 
 export type ProgramKey =
-  | 'Early-Stage Product Development Award'
-  | 'New Interdisciplinary Academic Collaborations'
-  | 'Academic Community Partnerships'
+  | 'Interdisciplinary Solution Development Award'
+  | 'Community-Academic Partnership Award'
+  | 'New Translational Science Tools and Methodologies Award'
 
 export const PROGRAM_KEYS: ProgramKey[] = [
-  'Early-Stage Product Development Award',
-  'New Interdisciplinary Academic Collaborations',
-  'Academic Community Partnerships',
+  'Interdisciplinary Solution Development Award',
+  'Community-Academic Partnership Award',
+  'New Translational Science Tools and Methodologies Award',
 ]
 
 export interface TemplateInputs {
@@ -80,13 +80,14 @@ Thank you for your consideration. Your efforts will help us fulfill our mission 
 
 const REVIEW_PARAGRAPH = `The burden of review is low. The research section is limited to two pages. The review process is simple, confidential, and will be completed via a REDCap survey. Reviewers remain anonymous, and your responses are invaluable feedback for our applicants. Reviews would be due by November 10, 2025.`
 
+// Carried over from the previous award lineup. The Translational Science Tools
+// intro is intentionally blank — the program team supplies it from Settings.
 const INTROS: Record<ProgramKey, string> = {
-  'Early-Stage Product Development Award':
-    'Even in these days of funding challenges, the Institute of Translational Health Sciences (ITHS) offers Pilot awards up to $100,000 to accelerate translation and improve health through its Early-Stage Product Development Award. This award is designed to support the development of new products based on scientific discovery and drive those products to clinical impact.',
-  'New Interdisciplinary Academic Collaborations':
+  'Interdisciplinary Solution Development Award':
     'Even in these days of funding challenges, the Institute of Translational Health Sciences (ITHS) offers Pilot awards up to $50,000 to accelerate research and improve health through its New Interdisciplinary Academic Partnerships Award. This unique award is designed to support new interdisciplinary partnerships in clinical and translational science that show potential to become long-term collaborations.',
-  'Academic Community Partnerships':
+  'Community-Academic Partnership Award':
     'Even in these days of funding challenges, the Institute of Translational Health Sciences (ITHS) offers Pilot awards up to $50,000 to accelerate research and improve health through its Academic Community Partnerships Award. This unique award is designed to jump start collaborations between academic researchers and community organizations in new projects that investigate a community-based health problem, disseminate evidence-based health innovations into practice, target health promotion or prevention, or examine ways to enhance or implement sustainable health programs in community settings.',
+  'New Translational Science Tools and Methodologies Award': '',
 }
 
 function lastName(fullName: string): string {
@@ -95,19 +96,18 @@ function lastName(fullName: string): string {
 }
 
 function buildDefaultBody(program: ProgramKey): string {
+  // Empty sections (e.g. an award with no intro copy yet) are dropped so the
+  // body doesn't render with a run of blank lines.
   return [
     'Dear Dr. {REVIEWER_LAST},',
-    '',
     INTROS[program],
-    '',
     "As an expert in your field, we request your help in reviewing Dr. {APPLICANT_LAST}'s project, {PROJECT_TITLE}.",
-    '',
     REVIEW_PARAGRAPH,
-    '',
     COMMON_TAIL,
-    '',
     SIGNATURE,
-  ].join('\n')
+  ]
+    .filter(Boolean)
+    .join('\n\n')
 }
 
 export function getDefaultTemplate(program: ProgramKey): EmailTemplate {

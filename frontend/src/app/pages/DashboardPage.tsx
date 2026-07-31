@@ -31,7 +31,7 @@ export function DashboardPage() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 p-6 overflow-auto bg-[#E8F0DD]/30">
+      <div className="flex-1 p-6 overflow-auto">
         <div className="max-w-7xl mx-auto">
 
           {/* Header */}

@@ -55,26 +55,25 @@ The Figma design supports two user flows — single-abstract and batch. **For th
 
 ## Real Data Shape (Gravity Forms)
 
-Abstracts come from the ITHS Gravity Forms API. `gravity_forms_client.py` already handles fetching, PDF download, text extraction (via `pypdf`), and COI parsing. Per-entry fields we get:
+Abstracts come from the ITHS Gravity Forms API. `gravity_forms_client.py` handles fetching and COI parsing. Per-entry fields we get:
 
 | Backend field | Source | Notes |
 |---|---|---|
 | `gf_entry_id` | GF `id` | Use as natural key alongside DB `id` |
 | `date_updated` | GF `date_updated` | Submission timestamp |
 | `title` | GF field `15` | Abstract title |
-| `pdf_url` | GF field `19` | PDF with full abstract + proposal |
-| `abstract_text` | Extracted from PDF via `extract_pdf_text()` | First 8 pages, may be empty on failure |
+| `abstract_text` | GF field `97` | Project abstract, submitted directly on the form (250-word max) |
 | `award_type` (= program) | GF field `49` | Real values below |
 | `applicant_name` | GF `96.3` + `96.4` + `96.6` | Already concatenated by `parse_entry()` |
 | `applicant_email` | GF field `2` | |
+| `institution` (= affiliation) | GF field `8` | Fixed-choice picker of the 13 partner institutions/orgs, plus free-text "Other" |
 | `exclude_authors` | GF fields `54/58/59/79/80` (name pairs) | COI list — applicant-declared reviewers to exclude |
-| `affiliation` | **Derived from email domain** | e.g. `@uw.edu` → UW, `@wsu.edu` → WSU, `@uidaho.edu` → U Idaho. Build a mapping; fall back to the domain if unknown. |
 | `phone` | **Not available** | Drop from UI or leave blank. |
 
-**Real program values** (award types from GF field `49`, observed in the 363-entry dataset):
-1. `Early-Stage Product Development Award`
-2. `New Interdisciplinary Academic Collaborations`
-3. `Academic Community Partnerships`
+**Real program values** (award types from GF field `49`):
+1. `Interdisciplinary Solution Development Award`
+2. `Community-Academic Partnership Award`
+3. `New Translational Science Tools and Methodologies Award`
 
 These replace the Figma mockup's "CAP/NIAP/ESPD" labels everywhere in the UI.
 
@@ -171,16 +170,14 @@ Single `docker-compose.yml` used everywhere — local machine and cloud. No over
 2. Add `backend/Dockerfile` (Python 3.12-slim, `pip install -r requirements.txt`, `COPY` source, runs uvicorn). No bind mounts — fully self-contained.
 3. Add root `docker-compose.yml` with `db` (mariadb:11) + `backend` services, shared internal network, `db_data` named volume, `docker/mariadb/init.sql` for schema creation
 4. Add `.env.example` (committed) and ensure `.env` is git-ignored. Compose pulls real values via `env_file: .env`.
-5. Install deps in `requirements.txt`: `fastapi`, `uvicorn[standard]`, `sqlmodel`, `pymysql`, `pypdf`
+5. Install deps in `requirements.txt`: `fastapi`, `uvicorn[standard]`, `sqlmodel`, `pymysql`
 6. Define SQLModel tables in `backend/models.py` (see schema below)
 7. On startup, `SQLModel.metadata.create_all(engine)` to materialize tables
 8. Smoke test: `docker compose up db backend` → `curl localhost:8000/health` returns OK, tables exist in MariaDB
 
 ### Phase 2: Gravity Forms Ingestion
 5. Create `backend/services/gf_sync.py` wrapping `GravityFormsClient`. For each entry:
-   - `parse_entry()` → structured dict
-   - `download_pdf()` + `extract_pdf_text(max_pages=8)` → abstract text
-   - Map email domain to institution via `affiliations.py`
+   - `parse_entry()` → structured dict (abstract text from GF field `97`, institution from GF field `8`)
    - UPSERT into `abstracts` by `gf_entry_id`; store `exclude_authors` as JSON
 6. `POST /sync/gravity-forms` — trigger sync (foreground for MVP, background task later)
 7. First run populates the 363 existing entries; subsequent runs pick up new submissions
@@ -232,7 +229,7 @@ Single `docker-compose.yml` used everywhere — local machine and cloud. No over
 **Existing backend** (don't break):
 - `src/agent/reviewer_finder_agent.py` — `find_reviewers()` is the core function the matcher wrapper will call. `INSTITUTIONS` dict is the authoritative institution list. May need to accept an `exclude_authors` parameter for COI.
 - `src/agent/tools.py` — unchanged
-- `gravity_forms_client.py` — reused by `backend/services/gf_sync.py`. `GravityFormsClient`, `extract_pdf_text()`, `parse_entry()` are the key exports.
+- `gravity_forms_client.py` — reused by `backend/services/gf_sync.py`. `GravityFormsClient` and `parse_entry()` are the key exports.
 
 **Files to delete**:
 - `app.py` — old Streamlit entrypoint, no longer used.
@@ -277,8 +274,8 @@ Single `docker-compose.yml` used everywhere — local machine and cloud. No over
 ```
 abstracts
   id (PK), gf_entry_id (UNIQUE), title, abstract_text,
-  pdf_url, program, applicant_name, applicant_email,
-  affiliation,              # derived from email domain
+  program, applicant_name, applicant_email,
+  affiliation,              # from GF field 8 (institution picker)
   exclude_authors_json,     # JSON array — COI list from GF
   status,                   # unmatched | processing | in-progress | matched
   submitted_at,             # from GF date_updated

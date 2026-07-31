@@ -2,9 +2,9 @@ import { createContext, useContext, useState, useCallback, useEffect, ReactNode 
 import { api, Abstract as APIAbstract, MatchJob } from '../../api/client'
 
 export const PROGRAMS = [
-  'Early-Stage Product Development Award',
-  'New Interdisciplinary Academic Collaborations',
-  'Academic Community Partnerships',
+  'Interdisciplinary Solution Development Award',
+  'Community-Academic Partnership Award',
+  'New Translational Science Tools and Methodologies Award',
 ]
 
 export const INSTITUTIONS: { state: string; universities: string[] }[] = [
