@@ -44,8 +44,8 @@ export function SettingsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <h2 className="text-xl font-semibold text-[#203E84] mb-2">Gravity Forms</h2>
           <p className="text-sm text-gray-600 mb-5">
-            Pull the latest applications from the ITHS Gravity Forms submission form and
-            extract abstract text from their PDFs. Existing entries are updated in place.
+            Pull the latest applications from the ITHS Gravity Forms submission form.
+            Existing entries are updated in place.
           </p>
 
           <div className="flex items-center gap-3">

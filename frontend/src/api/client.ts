@@ -78,7 +78,6 @@ export interface Abstract {
   gf_entry_id: string;
   title: string;
   abstract_text: string;
-  pdf_url: string;
   program: string;
   applicant_name: string;
   applicant_email: string;

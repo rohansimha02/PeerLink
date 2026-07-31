@@ -1,7 +1,6 @@
 claude-agent-sdk
 aiohttp
 python-dotenv
-pypdf
 fastapi
 uvicorn[standard]
 pymysql
